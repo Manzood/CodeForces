@@ -12,22 +12,42 @@ int main() {
 	while (t--) {
 		string res;
 		int n0,n1,n2;
-		cin>>n0>>n1>>n2;
-		int odd=false;
-		int lim=n1/2;
-		for (int i=0;i<lim;i++) {
-			res+="10";
+		scanf("%d %d %d",&n0,&n1,&n2);
+		if (n1==0) {
+			if (n2) {
+				for (int i=0;i<n2+1;i++) {
+					res+='1';
+				}
+			}
+			else if (n0) {
+				for (int i=0;i<n0+1;i++) {
+					res+='0';
+				}
+			}
 		}
-		if(lim==0) res+='0';
-		for (int i=0;i<n0;i++) {
-			res+='0';
+		else {
+			for (int i=0;i<n2;i++) {
+				res+='1';
+			}
+			bool one=true;
+			bool first=true;
+			for (int i=0;i<n1+1;i++) {
+				if (one) {
+					res+='1';
+					one=false;
+				}
+				else {
+					if (first==true) {
+						for (int i=0;i<n0;i++) {
+							res+='0';
+						}
+						first=false;
+					}
+					res+='0';
+					one=true;
+				}
+			}
 		}
-		for (int i=0;i<=n2;i++) {
-			res+='1';
-		}
-		if (n1%2==1 && n1>1) {
-			res+='0';
-		}
-		cout<<res<<endl;
+		cout<<res<<endl;	
 	}
 }

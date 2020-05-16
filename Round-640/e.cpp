@@ -1,6 +1,6 @@
 #include<cstdio>
-#include<algorithm>
 #include<vector>
+#include<algorithm>
 #include<iostream>
 #include<set>
 using namespace std;
@@ -13,29 +13,23 @@ int main() {
 		int n;
 		scanf("%d",&n);
 		vector <int> a(n);
-		vector <int> prefix(n);
-		set <int> elements;
+		vector <int> cnt(n+1,0);
 		for (int i=0;i<n;i++) {
 			scanf("%d",&a[i]);
-			elements.insert(a[i]);
-			if (i==0)
-				prefix[i]=a[i];
-			else
-				prefix[i]=prefix[i-1]+a[i];
+			cnt[a[i]]++;
 		}
-		set <int> used;
 		int ans=0;
 		for (int i=0;i<n;i++) {
-			for (int j=i+1;j<n;j++) {
-				if (elements.count(prefix[j]-prefix[i])>0) {
-					//debug(prefix[j]-prefix[i]);
-					if (used.count(prefix[j]-prefix[i])==0) {
-						used.insert(prefix[j]-prefix[i]);
-						ans++;
-					}
+			int sum=0;
+			for (int j=i;j<n;j++) {
+				sum+=a[j];
+				if (j-i>=1 && sum<=n) {
+					ans+=cnt[sum];
+					cnt[sum]=0;
 				}
 			}
 		}
-		printf("%d\n",ans);
+		printf("%d\n",ans);					
 	}
 }
+
