@@ -7,6 +7,10 @@ int main() {
 	scanf("%d %d %d %d\n",&a,&b,&c,&d);
 	long long ans=0;
 	//prefix sums approach is BEAUTIFUL
+	//solved after referring to a video by Aryan Mittal on youtube (I think that was his name)
+	//Basically, the approach counts the number of possible sums of x and y and stores it in prefix sums.
+	//Then it checks the number of values of z that are less than each sum and greater than c in O(n) time at the end, 
+	//which is the answer!
 	vector <int> bounds(c+b+2,0);
 	for (int i=a;i<=b;i++) {
 		bounds[i+b]+=1;
