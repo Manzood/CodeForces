@@ -6,19 +6,26 @@ int main() {
 	int a,b,c,d;
 	scanf("%d %d %d %d\n",&a,&b,&c,&d);
 	long long ans=0;
-	for (int z=c;z<=b+c && z<=d;z++) {
-		int y=c;
-		int start=z-c+1;
-		ans+=pow(b-a+1,min(c-b+1,(a-start+1)));
-		debug(ans);
-		y-=(a-start+1);
-		if (y<b)
-			continue;
-		int x=a+1;
-		while (y>b) {
-			ans+=b-x;
-			x++;
-			y--;
+	//prefix sums approach is BEAUTIFUL
+	vector <int> bounds(c+b+2,0);
+	for (int i=a;i<=b;i++) {
+		bounds[i+b]+=1;
+		bounds[i+c+1]-=1;
+	}
+	vector <int> prefix(b+c+2);
+	for (int i=0;i<prefix.size();i++) {
+		if (i==0)
+			prefix[i]=bounds[i];
+		else 
+			prefix[i]=prefix[i-1]+bounds[i];
+	}
+	// for (int x: prefix)
+		// debug(x);
+	for (int i=0;i<prefix.size();i++) {
+		if (prefix[i]>0) {
+			if (i>c) {
+				ans+=(long long)min(i-c,(d-c+1))*prefix[i];
+			}
 		}
 	}
 	printf("%lld\n",ans);
