@@ -2,6 +2,7 @@
 #include<iostream>
 #include<algorithm>
 #include<vector>
+#define debug(x) cout<<#x<<" = "<<endl;
 
 using namespace std;
 
