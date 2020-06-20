@@ -4,31 +4,37 @@ using namespace std;
  
 int main() {
 	int n;
-	scanf("%d",&n);
-	vector <long long> a(n);
-	long long m=0;
-	int ind=0;
+	cin>>n;
+	vector <int> a(n);
+	vector <int> bits(20);
+	vector <long long> ans(n);
+	for (int i=0;i<20;i++) 
+		bits[i]=0;
 	for (int i=0;i<n;i++) {
-		scanf("%lld",&a[i]);
-		if (a[i]>m) {
-			ind=i;
+		scanf("%d",&a[i]);
+		int current=1;
+		int pos=0;
+		while (current<=a[i]) {
+			if (current & a[i])
+				bits[pos]++;
+			current=current<<1;
+			pos++;
 		}
+		ans[i]=0;
 	}
-	sort(a.begin(),a.end());
-	for (int i=0;i<n-1;i++) {
-		int index=n-1;
-		while (index>i) {
-			if (a[index]|a[i]>a[index]) {
-				long long temp=a[index];
-				a[index]|=a[i];
-				a[i]&=temp;
+	for (int i=0;i<a.size();i++) {
+		int current=1;
+		for (int j=0;j<20;j++) {
+			if (bits[j]) {
+				ans[i]+=current;
+				bits[j]--;
 			}
-			index--;
+			current=current<<1;
 		}
 	}
-	long long ans=0;
+	long long sq=0;
 	for (int i=0;i<n;i++) {
-		ans+=(a[i]*a[i]);
+		sq+=ans[i]*ans[i];
 	}
-	cout<<ans<<endl;
+	cout<<sq;
 }	
