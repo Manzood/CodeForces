@@ -2,31 +2,34 @@
 using namespace std;
 #define debug(x) cout<<#x<<" = "<<x<<endl;
 
-int getind (int i, int n, int check) {
-	if (check==-1) {
-		if (i==0)
-			return n-1;
-		else 
-			return i-1;
-	}
-	else {
-		if (i==n-1) 
-			return 0;
-		else
-			return i+1;
-	}
-}
-
 int main() {
 	int n;
-	scanf("%d",&n);
+	cin >> n;
 	vector <int> a(n);
-	map<int, pair<int, int> mp;
-	for (int i=0;i<n;i++) {
-		scanf("%d",&a[i]);
-		mp[a[i]]=make_pair(getind(i,n,-1), getind(i,n,1));
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &a[i]);
 	}
-	for (auto x: mp) {
-		
-
+	vector <int> b;
+	for (int i = 0; i < n; i += 2) 
+		b.push_back(a[i]);
+	for (int i = 1; i < n; i += 2) 
+		b.push_back(a[i]);
+	for (int i = 0; i < n; i += 2) 
+		b.push_back(a[i]);
+	int count = 0;
+	long long s = 0;
+	long long m = 0;
+	for (int i = 0; i < b.size(); i++) {
+		if (count < (n+1)/2) {
+			s += b[i];
+			count++;
+		}
+		else {
+			s -= (b[i-count]);
+			s += b[i];
+		}
+		m = max (s, m);
+	}
+	printf("%lld\n", m);
 }
+
