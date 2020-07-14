@@ -1,43 +1,27 @@
-#include<iostream>
-#include<cstdio>
-#include<vector>
-#include<algorithm>
-
+#include<bits/stdc++.h>
 using namespace std;
+#define debug(x) cout<<#x<<" = "<<x<<endl;
 
-int main()
-{
-	int t;
-	scanf("%d",&t);
-	while (t--)
-	{
-		long long n,s,k;
-		scanf("%lld %lld %lld", &n, &s, &k);
-		s--;
-		vector <int> a(n);
-		for (long long i=0;i<n;i++)
-			a[i]=1;
-		long long b;
-		while (k--)
-		{
-			scanf ("%lld",&b);
-			a[b-1]=0;
-		}
-		long long ans;
-		ans=n;
-		for (long long i=0;i<n;i++)
-		{
-			if (a[i]==1)
-			{
-				if (abs(i-s)<ans)
-				{
-					ans=abs(i-s);
-				}
-			}
-		}
-		if (ans==n)
-			printf("0\n");
-		else
-			printf("%lld\n",ans);
-	}
-}	
+int main() {
+    int t;
+    cin>>t;
+    while (t--) {
+        int n, s, k;
+        scanf("%d%d%d", &n, &s, &k);
+        vector <int> a(k);
+        for (int i=0; i<k; i++) {
+            scanf("%d", &a[i]);
+        }
+        int ans=k+1;
+        for (int i=max(1,s-k); i<=min(n,s+k); i++) {
+            bool found = false;
+            for (int j=0; j<k; j++) {
+                if (a[j] == i)
+                    found = true;
+            }
+            if (!found) 
+                ans = min (abs(s-i), ans);
+        }
+        printf("%d\n", ans);
+    }
+}
