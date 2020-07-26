@@ -1,52 +1,52 @@
 #include<bits/stdc++.h>
 using namespace std;
 #define debug(x) cout<<#x<<" = "<<x<<endl;
-#define int long long
 
-int32_t main() {
+set <char> visited;
+bool dfs (vector <vector <char>> adj, char a, char b) {
+	if (visited.count(a))
+		return false;
+	int curr = a - 'a';
+	visited.insert(a);
+	bool retval = false;
+	for (char x: adj[curr]) {
+		if (x == b) return true;
+		if (dfs(adj, x, b) == true) 
+			return true;
+	}
+	return retval;
+}
+
+int main() {
 	int t;
 	cin >> t;
 	while (t--) {
 		int n;
-		scanf("%lld", &n);
+		scanf("%d", &n);
 		string a, b;
-		cin >> a;
-		cin >> b;
-		vector <set <char> > check(26);
+		cin >> a >> b;
 		bool possible = true;
+		vector <vector <char>> adj(20);
+		map <pair <char, char>, bool> mp;
 		int ans = 0;
-		for (int i=0; i<n; i++) {
-			// check it out
-			int ind = a[i] - 'a';
-			if (a[i] > b[i]) possible = false;
-			else if (a[i] < b[i]) {
-				bool found = false;
-				if (check[ind].count(b[i]) > 0) 
-					found = true;
-				for (int j=0; found == false && j<check.size(); j++) {
-					if (check[j].count(b[i]) > 0 && check[j].count(a[i]) > 0) {
-						found = true;
-						check[ind].insert(b[i]);
-						break;
-					}
-				}
-				for (char x: check[ind]) {
-					for (char y: check[x-'a']) {
-						if (y == b[i]) {
-							found = true;
-							break;
-						}
-					}
-				}
-				if (!found) {
-					// debug(i);
-					// debug(a[i]);
+		for (int i = 0; i < n; i++) {
+			if (b[i] < a[i]) {
+				possible = false;
+				break;
+			}
+			else if (b[i] > a[i]) {
+				if (mp[make_pair(a[i], b[i])] == true) continue;
+				visited.clear();
+				if (!dfs(adj, a[i], b[i])) {
+					adj[a[i]-'a'].push_back(b[i]);
+					adj[b[i]-'a'].push_back(a[i]);
+					mp[make_pair(a[i], b[i])] = true;
+					if (adj[a[i]-'a'].size() == 19 || adj[b[i]-'a'].size() == 19) break;
 					ans++;
-					check[ind].insert(b[i]);
 				}
 			}
 		}
-		if (possible) printf("%lld\n", ans);
-		else printf("-1\n");
+		if (possible == false) printf("-1\n");
+		else printf("%d\n", ans);
 	}
 }
