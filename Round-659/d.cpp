@@ -44,6 +44,7 @@ int main() {
 					if (adj[a[i]-'a'].size() == 19 || adj[b[i]-'a'].size() == 19) break;
 					ans++;
 				}
+                if (visited.size() == 20) break;
 			}
 		}
 		if (possible == false) printf("-1\n");
