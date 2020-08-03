@@ -4,41 +4,41 @@ using namespace std;
 
 int main() {
 	int t;
-	cin >> t;
-	while (t--) {
-		int n, k, l;
-		scanf("%d%d%d", &n, &k, &l);
-		vector <int> a(n);
-		for (int i=0; i<n; i++) {
-			scanf("%d", &a[i]);
-		}
-		int safe = -1;
-		int current = 0;
-		int currentdir=1;
-		bool possible = true;
-		int leeway = 0;
-		for (int i=0; i<n; i++) {
-			if (a[i] + k <= l) {
-				safe = i;
-			}	
-			if (a[i] > l) possible = false;
-			if (i == safe+1) {
-				leeway = l - a[i];
-			}
-			if (a[i] + current - leeway> l) { 
-				possible = false;
-			}
-			else {
-				if (a[i] + current <= l) {
-					leeway = l - a[i] - current;
-				}
-			}
-			if (leeway > 0) leeway--;
-			if (current == k) currentdir=-1;
-			if (current == 0) currentdir=1;
-			current+=currentdir;
-		}	
-		if (possible) printf("Yes\n");
-		else printf("No\n");
-	}
+    cin >> t;
+    while (t--) {
+        int n, k, l;
+        scanf("%d%d%d", &n, &k, &l);
+        vector <int> a(n);
+        int curr = k;
+        int dir = -1;
+        bool possible = true;
+        for (int i = 0; i < n; i++) {
+            scanf("%d", &a[i]);
+        }
+        int pos = -1;
+        while (pos < n - 1 && possible == true) {
+            if (pos > 0 && a[pos] + k <= l) {
+                curr = k;
+                dir = -1;
+            }
+            if (a[pos+1] + curr > l) {
+                if (dir == -1) {
+                    curr = l - a[pos+1];
+                    if (pos > 0 && a[pos] + curr + 1 > l) possible = false;
+                    if (curr < 0) possible = false;
+                }
+                else 
+                    possible = false;
+            }
+            if (curr == 0) 
+                dir = 1;
+            if (curr == k) 
+                dir = -1;
+            curr += dir;
+            pos++;
+        }
+        // debug (possible);
+        if (possible) printf("Yes\n");
+        else printf("No\n");
+    }
 }
