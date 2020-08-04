@@ -5,37 +5,28 @@ using namespace std;
 int main() {
     int t;
     cin >> t;
+    int tests = t;
     while (t--) {
         int n, k, z;
         scanf("%d%d%d", &n, &k, &z);
         vector <int> a(n);
-        int mx = 0;
+        vector <int> pref(n+1);
+        pref[0] = 0;
         for (int i = 0; i < n; i++) {
             scanf("%d", &a[i]);
+            pref[i+1] = pref[i] + a[i];
         }
-        vector <int> pref(k);
-        for (int i = 0; i < k; i++) {
-            if (i == 0) {
-                pref[i] = a[i];
-            }
-            else {
-                pref[i] = pref[i-1] + a[i];
-            }
+        int ans = 0;
+        for (int i = 1; i <= k; i++) {
+            int moves = i;
+            int sum = pref[i+1];
+            int rem = min((k-i), 2*z);
+            moves += rem;
+            sum += pref[k-moves+i+1] - pref[i+1];
+            if (rem % 2 == 1) sum += a[i-1];
+            sum += (rem/2) * (a[i] + a[i-1]);
+            ans = max(ans, sum);
         }
-        int sum = 0;
-        for (int i = 0; i <= k; i++) {
-            sum += a[i];
-            if (i > 0) {
-                int temp = sum;
-                temp += (a[i] + a[i-1]) * (min((k-i) / 2, z));
-                int used = (min((k-i)/2, z));
-                if (i + used <= k) {
-                    int rem = k - i - used + 1;
-                    temp += pref[i+rem] - pref[i];
-                }
-                mx = max (temp, mx);
-            }
-        }
-        printf("%d\n", mx);
+        printf("%d\n", ans);
     }
 }
