@@ -9,36 +9,17 @@ int32_t main() {
     cin >> t;
     while (t--) {
         int n, s;
-        scanf("%lld%lld", &n, &s);
-        int t1, t2;
+        scanf("%d", &n, &s);
+        vector <vector <int> > adj(n);
         vector <int> w(n-1);
-        int sum = 0;
+        vector <int> edge(n);
         for (int i = 0; i < n-1; i++) {
-            scanf("%lld%lld%lld", &t1, &t2, &w[i]);
-            sum += w[i];
-        }
-        make_heap (w.begin(), w.end());
-        int moves = 0;
-        while (sum > s) {
-            // debug(sum);
-            sum -= w.front();
-            int temp = w.front();
-            // debug(temp);
-            for (auto x: w) {
-                printf("%lld ", x);
-            }
-            printf("\n");
-            pop_heap(w.begin(), w.end());
-            w.pop_back();
-            w.push_back(temp/2LL);
-            push_heap(w.begin(), w.end());
-            sum += temp/2LL;
-            moves++;
-        }
-            for (auto x: w) {
-                printf("%lld ", x);
-            }
-            printf("\n");
-        printf("%lld\n", moves);
+            // find a good way to store edges
+            int u, v;
+            scanf("%d%d%d", &u, &v, &w[i]);
+            u--; v--;
+            adj[u].push_back(v);
+            adj[v].push_back(u); 
+            
     }
 }   
