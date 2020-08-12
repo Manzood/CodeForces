@@ -2,22 +2,21 @@
 using namespace std;
 #define debug(x) cout<<#x<<" = "<<x<<endl;
 #define sz(x) (int) (x).size()
+#define int long long
 const int MOD = 1e9+7;
 
-int main() {
-    int t = 1;
-    // cin >> t;
-    while (t--) {
-        int n;
-        scanf("%d", &n);
-        long long ans = 1;
-        for (int i = 4; i <= n; i++) {
-            if (i == 4) ans = 16;
-            else {
-                ans *= 2LL;
-                ans %= MOD;
-            }
-        }
-        printf("%lld\n", ans);
+int32_t main() {
+    int n;
+    scanf("%lld", &n);
+    int ans = 1;
+    int twopow = 1;
+    for (int i = 1; i <= n; i++) {
+        ans *= i;
+        ans %= MOD;
+        if (i > 1) twopow *= 2LL;
+        twopow %= MOD;
     }
+    ans -= twopow;
+    if (ans < 0) ans += MOD;
+    printf("%lld\n", ans);
 }
