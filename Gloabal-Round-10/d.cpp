@@ -2,52 +2,39 @@
 using namespace std;
 #define debug(x) cout<<#x<<" = "<<x<<endl;
 #define sz(x) (int) (x).size()
-#define int long long
 
 int32_t main() {
     int t = 1;
     cin >> t;
     while (t--) {
         int n;
-        scanf("%lld", &n);
-        string s;
-        cin >> s;
-        s += s;
+        scanf("%d", &n);
+        string s; cin >> s;
+        // if there are three R's or three L's in a row, change it
+        int count = 0;
+        while (s[0] == s.back() && sz(s) > 0) {
+            s.pop_back();
+            count++;
+        }
         int ans = 0;
-        bool flag = false;
-        int i = 0;
-        char last;
-        int count;
-        while (!flag) {
-            if (i == 0) {
-                last = s[i];
-                count = 1;
-            }
-            else if (i >= n && s[i] != last) {
-                flag = true;
+        if (sz(s) == 0) {
+            ans += count/3;
+            if (count % 3 > 0) ans++;
+            printf("%d\n", ans);
+            continue;
+        }
+        for (int i = 0; i < sz(s); i++) {
+            int j = i-1;
+            if (j == -1) j = sz(s) - 1;
+            if (s[i] == s[j] || (s[i] != s[j] && i == 0 && count > 0)) {
+                count++;
             }
             else {
-                if (s[i] == last) {
-                    count++;
-                    if (count % 3 == 0) {
-                        if (s[i] == 'R') {
-                            s[i] = 'L';
-                        }
-                        else {
-                            s[i] = 'R';
-                        }
-                        last = s[i];
-                        count = 1;
-                        ans++;
-                    }
-                }
-                else {
-                    count = 1;
-                    last = s[i];
-                }
+                ans += count/3;
+                count = 1;
             }
-            i++;
         }
-        printf("%lld\n", ans);
+        ans += count/3;
+        printf("%d\n", ans);
     }
 }
