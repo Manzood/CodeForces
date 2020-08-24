@@ -11,13 +11,16 @@ int main() {
         int x, y, z;
         cin >> a >> b >> c >> x >> y >> z;
         long long ans = 0;
-        a -= min(a, z);
-        z -= min(a, z);
+        int m = min(a, z);
+        a -= m;
+        z -= m;
         ans += min(c, y) * 2;
-        c -= min(c, y);
-        y -= min(c, y);
-        b -= min(b, x);
-        x -= min(b, x);
+        m = min(c, y);
+        c -= m;
+        y -= m;
+        m = min(b, x);
+        b -= m;
+        x -= m;
         ans -= 2 * min(z, b);
         printf("%lld\n", ans);
     }
