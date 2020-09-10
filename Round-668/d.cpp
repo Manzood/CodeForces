@@ -6,13 +6,19 @@ using namespace std;
 vector <vector <int>> adj;
 vector <bool> visited;
 vector <int> distfroma;
+vector <int> distances;
 int dfs (int node, int dist) {
     if (visited[node]) return 0;
     visited[node] = true;
     int ret = 0;
+    int temp;
     for (auto x: adj[node]) {
         if (!visited[x]) {
-            ret = max(ret, dfs(x, dist+1)+1);
+            temp = dfs(x, dist + 1);
+            ret = max(ret, temp + 1);
+            if (node == 0) {
+                distances.push_back(temp+1);
+            }
         }
     }
     return ret;
@@ -35,6 +41,7 @@ int main() {
         scanf("%d%d%d%d%d", &n, &a, &b, &da, &db);
         adj.resize(n);
         visited.resize(n);
+        distances.clear();
         distfroma.resize(n);
         for (int i = 0; i < n; i++) {
             visited[i] = false;
@@ -49,13 +56,17 @@ int main() {
             adj[u].push_back(v);
             adj[v].push_back(u);
         }
-        int mx = dfs(0, 0);
+        dfs(0, 0);
         for (int i = 0; i < n; i++) {
             visited[i] = false;
         }
         dfs2(a-1, 0);
-        // sort and then check if there is a continuous set of repeats
+        sort(distances.begin(), distances.end());
         bool ans = true;
+        int t1 = distances[sz(distances)-1];
+        int t2 = 0;
+        if (sz(distances) >= 2) t2 = distances[sz(distances)-2];
+        int mx = t1+t2;
         if (a == b || distfroma[b-1] <= da) {
             ans = false;
         }
