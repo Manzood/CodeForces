@@ -28,7 +28,7 @@ int main() {
             clarge = a[i];
             indlarge = i;
         }
-        else if (a[i] <= csmall) {
+        if (a[i] <= csmall) {
             jumps[i] = min(jumps[i], jumps[indsmall]+1);
             csmall = a[i];
             indsmall = i;
@@ -38,7 +38,7 @@ int main() {
         jumps[n-1] = 0;
     }
     if (indsmall < n-1 && indlarge < n-1) {
-        jumps[n-1] += min(jumps[indsmall]+n-1-indsmall, jumps[indlarge]+n-1-indlarge);
+        jumps[n-1] = min(jumps[indsmall]+n-1-indsmall, jumps[indlarge]+n-1-indlarge);
     }
     printf("%d\n", jumps[n-1]);
 }
