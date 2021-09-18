@@ -7,20 +7,16 @@ int32_t main () {
     int t;
     cin >> t;
     while (t--) {
+        int n;
+        scanf("%lld", &n);
         string s;
         cin >> s;
-        int num1 = 0, num2 = 0;
-        int n = s.size();
+        int ans = 0;
         for (int i = 0; i < n; i++) {
-            if (i % 2 == 0) {
-                num1 *= 10;
-                num1 += s[i] - '0';
-            } else {
-                num2 *= 10;
-                num2 += s[i] - '0';
-            }
+            ans += s[i] - '0';
+            if (s[i] - '0' > 0) ans++;
         }
-        int ans = (num1 + 1) * (num2 + 1) - 2;
+        if (s[n-1] > '0') ans--;
         printf("%lld\n", ans);
     }
 }

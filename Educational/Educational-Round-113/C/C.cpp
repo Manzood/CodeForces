@@ -27,6 +27,7 @@ int32_t main () {
                 cnt++;
             }
         }
+        int k = cnt;
 
         if (a[n-1] == a[n-2]) {
             for (int i = 0; i < n; i++) {
@@ -34,25 +35,26 @@ int32_t main () {
                 ans %= mod;
             }
         } else if (a[n-1] - a[n-2] == 1) {
-            for (int i = 0; i < n; i++) {
-                ans *= i + 1;
-                ans %= mod;
+            // (k + 2) * (n - k - 1) P (n - k - 1);
+            // for (int i = 0; i < n; i++) {
+                // ans *= i + 1;
+                // ans %= mod;
+            // }
+            int upper = n;
+            int lower = k + 1;
+            int val = 1;
+            for (int i = lower + 1; i <= upper; i++) {
+                val *= i;
+                val %= mod;
             }
-
-            int v1 = 1;
-            for (int i = 1; i <= cnt; i++) {
-                v1 *= i;
-                v1 %= mod;
+            for (int i = 1; i <= k; i++) {
+                val *= i;
+                val %= mod;
             }
-
-            int v2 = 1;
-            for (int i = (2 + cnt) * (n - cnt - 1); i > (cnt + 1) * (n - cnt - 1); i--) {
-                v2 *= i;
-                v2 %= mod;
-            }
-
-            ans -= (v1 * v2);
-            while (ans < 0) ans += mod;
+            val *= k;
+            val %= mod;
+            ans = val;
+            if (ans < 0) ans += mod;
         } else {
             ans = 0;
         }
