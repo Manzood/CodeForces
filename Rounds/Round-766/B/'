@@ -1,0 +1,57 @@
+#include "bits/stdc++.h"
+using namespace std;
+
+#ifdef local
+#include "custom/debugger.h"
+#else
+#define debug(...) 42;
+#endif
+
+#define int long long
+
+void solve() {
+    int n, m;
+    scanf("%lld%lld", &n, &m);
+    int sum = (n % 2) + (m % 2);
+    int val = 0;
+    int add;
+    int dist = 0;
+    if (sum == 0) {
+        val = 4;
+        add = 8;
+    } else if (sum == 1) {
+        val = 2;
+        add = 6;
+    } else {
+        val = 1;
+        add = 4;
+    }
+    vector <int> ans;
+    for (int i = 0; i < val; i++) {
+        // fill out centre
+        ans.push_back (dist);
+    }
+    dist++;
+    int cur = 0;
+    while (++val <= n * m) {
+        cur++;
+        ans.push_back (dist);
+        if (cur == add) {
+            cur = 0;
+            add += 4;
+            dist++;
+        }
+    }
+    for (int i = 0; i < (int) ans.size(); i++) {
+        printf("%lld ", ans[i]);
+    }
+    printf("\n");
+}
+
+int32_t main() {
+    int t = 1;
+    cin >> t;
+    for (int tt = 1; tt <= t; tt++) {
+        solve();
+    }
+}
