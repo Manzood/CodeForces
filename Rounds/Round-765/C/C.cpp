@@ -11,67 +11,47 @@ using namespace std;
 const int inf = 1e18;
 
 void solve() {
-    int n, l, k;
-    scanf("%lld%lld%lld", &n, &l, &k);
+    int n, l, target;
+    scanf("%lld%lld%lld", &n, &l, &target);
     vector<int> pos(n);
-    vector<int> value(n);
-    vector<int> influence(n);
+    vector<int> limit(n);
+    vector<int> influence(n, 0);
     for (int i = 0; i < n; i++) {
         scanf("%lld", &pos[i]);
     }
     for (int i = 0; i < n; i++) {
-        scanf("%lld", &value[i]);
+        scanf("%lld", &limit[i]);
     }
-    int ans = 0;
-    for (int i = 1; i < n; i++) {
-        ans += (pos[i] - pos[i - 1]) * value[i - 1];
-    }
-    for (int i = 0; i < n - 1; i++) {
+    pos.push_back(l);
+    for (int i = 0; i < n; i++) {
         influence[i] = pos[i + 1] - pos[i];
     }
-
-    influence[n - 1] = l - pos[n - 1];
-    ans += value[n - 1] * influence[n - 1];
-    vector<vector<int>> dp(n, vector<int>(k + 1, ans));
-    vector<vector<int>> cur(n, vector<int>(k + 1));
+    int ans = 0;
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j <= k; j++) {
-            cur[i][j] = value[i];
-        }
+        ans += limit[i] * influence[i];
     }
+    debug (ans);
+    vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(target + 1, vector<int>(target + 1, ans)));
 
     for (int i = 1; i < n; i++) {
-        for (int j = 1; j <= k; j++) {
-            // dp[i][j] = minimum out of deleting j points until index i
-            // cur[i][j] = current value of stop sign i after deleting j points
-            dp[i][j] = min(dp[i][j], dp[i - 1][j]);
-            int val = (value[i] - cur[i - 1][j - 1]) * influence[i];
-            if (dp[i - 1][j - 1] - val < dp[i][j]) {
-                cur[i][j] = cur[i - 1][j - 1];
-                dp[i][j] = dp[i - 1][j - 1] - val;
-            }
-            if (dp[i][j - 1] < dp[i][j]) {
-                dp[i][j] = dp[i][j - 1];
-                cur[i][j] = cur[i][j - 1];
+        // keeping sign i
+        for (int j = 0; j <= target && j <= i - 1; j++) {
+            // removing the previous j positions
+            // int cur = limit[i-j-1];
+            int lastsign = i - j - 1;
+            int rem = target - j;
+            for (int k = 0; k + j <= target; k++) {
+                debug(i, j, k);
+                debug (rem, lastsign);
+                if (j == 0) dp[i][j][k] = min (dp[i][j][k], dp[lastsign][rem][k]);
+                if (j < target) dp[i][j][k] = min (dp[i][j][k], dp[i-1][j+1][k] - (influence[i-1] * limit[i-1]) + (influence[i-1] * limit[lastsign]));
+                ans = min(ans, dp[i][j][k]);
             }
         }
     }
-    // for (int i = 0; i < n; i++) {
-    //     for (int j = 0; j <= k; j++) {
-    //         printf("%lld ", cur[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-    // for (int i = 0; i < n; i++) {
-    //     for (int j = 0; j <= k; j++) {
-    //         printf("%lld ", dp[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-    for (int j = 0; j <= k; j++) {
-        ans = min(ans, dp[n - 1][j]);
-    }
-    // debug (dp);
+
+    debug (dp);
+
     printf("%lld\n", ans);
 }
 
