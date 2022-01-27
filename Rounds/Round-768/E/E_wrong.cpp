@@ -16,22 +16,60 @@ void solve() {
     for (int i = 0; i < n; i++) {
         scanf("%lld", &a[i]);
     }
-    vector <int> prev(n + 1, -1);
-    vector <int> dp(n, 0);
+    vector <int> last(n + 1, -1);
     for (int i = 0; i < n; i++) {
-        if (i > 0) dp[i] = dp[i-1];
-        if (prev[a[i]] == -1) {
-            prev[a[i]] = i;
-        }
-        int dist = i - prev[a[i]] - 1;
-        int value = dp[prev[a[i]]] + dist;
-        if (dp[i] > value) {
-            prev[a[i]] = i;
-        } else {
-            dp[i] = value;
-        }
+        last[a[i]] = i;
     }
-    printf("%lld\n", dp[n-1]);
+    int ans = 0;
+    int s = 0;
+    vector <int> end;
+    int endind = -1;
+    int cnt = 0;
+    for (int i = 0; i < n; i++) {
+        if ((int) end.size() > 0 && i == end[endind]) {
+            ans += end[endind] - s - 1 - cnt;
+            endind++;
+            cnt = 0;
+        }
+        int e;
+        if ((int) end.size() < endind) {
+            e = -1;
+        } else {
+            e = end[(int) end.size() - 1];
+        }
+        if (last[a[i]] > e) {
+            if ((int) end.size() == endind) {
+                s = i;
+                end.push_back(last[a[i]]);
+            } else if (endind + 1 == (int) end.size()) {
+                end.push_back (last[a[i]]);
+            } else {
+                end[end.size() - 1] = last[a[i]];
+                cnt = 1;
+            }
+        }
+
+        // if (last[a[i]] > e) {
+        //     if (e > -1) twice = true;
+        //     e = last[a[i]];
+        // }
+        // if (s == -1) {
+        //     if (e > -1) s = i;
+        // }
+        // if (i == e) {
+        //     // reached the end
+        //     if (twice) {
+        //         if (e > s + 1) ans += e - s - 2;
+        //     } else {
+        //         if (e > s + 1) ans += e - s - 1;
+        //     }
+        //     s = -1;
+        //     e = -1;
+        //     twice = false;
+        // }
+        // debug (i, s, e, ans);
+    }
+    printf("%lld\n", ans);
 }
 
 int32_t main() {
