@@ -22,6 +22,8 @@ void solve() {
     int y = n;
     for (int i = 0; i + k + (n - k + 1) / 2 - 1 < n; i++) {
         int ind = i + k + (n - k + 1) / 2 - 1;
+        // this could be better written as
+        // ind = i + (n + k - 1) / 2
         // debug (a, i, ind);
         int curx = b[i];
         int cury = b[ind];
