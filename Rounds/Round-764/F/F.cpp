@@ -17,54 +17,26 @@ int query (int val) {
 int32_t main() {
     int n;
     cin >> n;
-    int x = 0;
     int low = 1;
-    int high = n - 1;
-    int prev_query = 0;
-    int div = 1;
-    int sum_of_queries = 0;
-    int mid = (low + high) / 2;
-
-    int num_queries = 0;
-    while (low < high && num_queries <= 10) {
+    int high = n;
+    int cnt = 0;
+    int balance = 0;
+    int mid;
+    int diff = 0;
+    while (low < high) {
         mid = (low + high) / 2;
         debug (low, high, mid);
-        // fix query each time
-        int ans = query (prev_query + mid);
-        num_queries++;
-
-        sum_of_queries += prev_query + mid;
-
-        if (ans >= div) {
+        int rem = n - mid - 1;
+        int response = query (rem + balance);
+        diff += rem + balance;
+        if (response > cnt) {
             low = mid + 1;
-            prev_query = n - mid;
-            div++;
+            cnt = response;
         } else {
-            high = mid - 1;
-            prev_query = 0;
+            high = mid;
         }
-        debug (low, high);
+        balance = n - rem - balance;
     }
-
-    x = (low + high) / 2;
-
-    // while (low < high) {
-    //     int val = (low + high) / 2;
-    //     // debug (low, high);
-    //     int ans = query (prev_query + val);
-    //     sum_of_queries += prev_query + val;
-    //
-    //     prev_query = 0;
-    //     if (ans >= div) {
-    //         low = n - val;
-    //     } else {
-    //         high = n - val - 1;
-    //         prev_query +=  n - val;
-    //     }
-    //
-    //     div++;
-    //     prev_query += n - val;
-    // }
-
-    cout << "! " << x + sum_of_queries << endl;
+    debug(mid);
+    cout << "! " << mid + diff << endl;
 }
