@@ -17,19 +17,21 @@ void solve() {
         scanf("%lld", &a[i]);
     }
     for (int i = 0; i < k; i++) {
-        int target;
-        scanf("%lld", &target);
+        int ans = 0;
         int left = 0;
         int right = n - 1;
-        int mid;
-        while (left + 1 < right) {
-            mid = (left + right) / 2;
-            if (a[mid] > target) {
+        int target;
+        scanf("%lld", &target);
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (a[mid] <= target) {
+                ans = mid + 1;
+                left = mid + 1;
+            } else {
                 right = mid - 1;
-            } else if (a[mid] <= target) {
-                left = mid;
             }
         }
+        printf("%lld\n", ans);
     }
 }
 
