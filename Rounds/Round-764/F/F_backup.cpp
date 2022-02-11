@@ -24,20 +24,19 @@ int32_t main() {
     int sum = 0;
     while (low <= high) {
         int mid = low + (high - low) / 2;
-        debug (mid, low, high, cnt);
+        debug (mid, low, high);
         int q = n - mid + balance;
         int response = query (q);
         sum += q;
+        balance = n - q;
         if (response > cnt) {
             cnt = response;
             ans = mid;
             low = mid + 1;
-            balance = n - q;
         } else {
-            balance = -(n - q);
             high = mid - 1;
-            // cnt++;
         }
+        cnt++;
         debug (ans, low, high);
     }
     debug(ans, sum);
