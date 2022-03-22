@@ -10,37 +10,48 @@ using namespace std;
 #define int long long
 constexpr int inf = 1e18;
 
-int bfs (int node, int t, vector <vector <int>>& adj, vector <int>& distance, set <int>& surroundings) {
-    int retval = 0;
+int answer = 0;
+void bfs(vector <vector <int>>& adj, int s, int t, int test) {
     int n = adj.size();
+    vector <int> visited(n, false);
+    vector <int> dist(n, inf);
     queue <int> q;
-    q.push(node);
-    distance[node] = 0;
-    vector <bool> visited(n, false);
-    distance[t] = inf;
+    vector <int> ans(n, 0);
+    q.push(s);
+    dist[s] = 0;
     while (!q.empty()) {
         int cur = q.front();
-        if (distance[cur] > distance[t]) break;
+        visited[cur] = true;
         q.pop();
         for (auto u: adj[cur]) {
-            distance[u] = min(distance[u], distance[cur] + 1);
             if (!visited[u]) {
-                visited[u] = true;
+                dist[u] = dist[cur] + 1;
                 q.push(u);
+                visited[u] = true;
             }
-            if (u == t) {
-                retval++;
+            if (u == t && dist[cur] + 1 <= dist[u] + 1) {
+                if (test == 4) {
+                    debug(cur);
+                }
+                // answer++;
+                ans[cur]++;
+            }
+            if (dist[u] == dist[cur]) {
+                ans[cur] += ans[u];
+                // ans[u]++;
+                // answer += ans[u];
             }
         }
     }
-    return retval;
 }
 
 void solve([[maybe_unused]] int test) {
+    answer = 0;
     int n, m;
     scanf("%lld%lld", &n, &m);
     int s, t;
     scanf("%lld%lld", &s, &t);
+    s--; t--;
     vector <vector <int>> adj(n);
     for (int i = 0; i < m; i++) {
         int u, v;
@@ -49,8 +60,8 @@ void solve([[maybe_unused]] int test) {
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    set <int> surroundings;
-    for (auto x: adj[t]) surroundings.insert(x);
+    bfs(adj, s, t, test);
+    printf("%lld\n", answer);
 }
 
 int32_t main() {
