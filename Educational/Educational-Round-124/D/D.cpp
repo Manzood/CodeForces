@@ -54,6 +54,44 @@ point getclosest (point cur, set <pair <int, int>>& forbidden, set <pair <int, i
     return retval;
 }
 
+void propagate(point cur, map <pair <int, int>, pair <int, int>>& best, set <pair <int, int>>& forbidden) {
+    queue <point> q;
+    q.push(cur);
+    set <pair <int, int>> visited;
+    while (!q.empty()) {
+        for (auto d: dirs) {
+            point newpoint = {cur.x + d[0], cur.y + d[1]};
+            if (!visited.count({newpoint.x, newpoint.y}) && forbidden.count({newpoint.x, newpoint.y})) {
+                pair <int, int> bestval = best[{newpoint.x, newpoint.y}];
+            }
+        }
+    }
+}
+
+// should probably write a new function
+point findbest(point cur, set <pair <int, int>>& forbidden, map <pair <int, int>, pair <int, int>>& best) {
+    point retval = cur;
+    if (!forbidden.count({cur.x, cur.y})) {
+        return retval;
+    }
+    int bestdist = inf;
+    for (auto d: dirs) {
+        point newpoint;
+        newpoint.x = cur.x + d[0];
+        newpoint.y = cur.y + d[1];
+        auto b = best.find({newpoint.x, newpoint.y});
+        if (b == best.end()) {
+            point temp = findbest(newpoint, forbidden, best);
+            if (manhattan(temp, cur) < bestdist) {
+                cur = temp;
+                bestdist = manhattan(temp, cur);
+            }
+        } else {
+        }
+    }
+    return retval;
+}
+
 void solve([[maybe_unused]] int test) {
     int n;
     scanf("%lld", &n);
