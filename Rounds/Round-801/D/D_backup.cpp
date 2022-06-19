@@ -10,16 +10,16 @@ using namespace std;
 #define int long long
 
 vector <int> visited;
-void dfs(int node, vector <vector <int>>& adj, vector <int>& ans) {
+void dfs(int node, vector <vector <int>>& adj, vector <int>& atdist, int dist) {
     visited[node] = true;
     int cnt = 0;
     for (auto u: adj[node]) {
-        if (visited[u]) continue;
-        dfs(u, adj, ans);
-        ans[node] += ans[u];
-        if (ans[u] == 0) cnt++;
+        if (!visited[u]) {
+            cnt++;
+            dfs(u, adj, atdist, dist + 1);
+        }
     }
-    ans[node] += max(0LL, cnt - 1);
+    atdist[dist + 1] += max(0LL, cnt - 1);
 }
 
 void solve([[maybe_unused]] int test) {
@@ -34,12 +34,16 @@ void solve([[maybe_unused]] int test) {
         adj[y].push_back(x);
     }
     visited.resize(n, false);
-    int ans = (int) 1e9 + 7;
+    int ans = n;
     for (int i = 0; i < n; i++) {
         visited.assign(n, false);
-        vector <int> t_ans(n, 0);
-        dfs(i, adj, t_ans);
-        ans = min(ans, t_ans[i] + 1);
+        vector <int> atdist(n + 1, 0);
+        dfs(i, adj, atdist, 0);
+        int cur = 0;
+        for (int j = 0; j < n; j++) {
+            cur = max(cur, atdist[j]);
+        }
+        ans = min(ans, cur + 1);
     }
     if (n == 1) ans = 0;
     printf("%lld\n", ans);
