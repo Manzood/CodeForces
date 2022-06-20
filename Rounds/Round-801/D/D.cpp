@@ -35,11 +35,17 @@ void solve([[maybe_unused]] int test) {
     }
     visited.resize(n, false);
     int ans = (int) 1e9 + 7;
+    int root = -1;
     for (int i = 0; i < n; i++) {
+        if ((int) adj[i].size() >= 3) root = i;
+    }
+    if (root > -1) {
         visited.assign(n, false);
         vector <int> t_ans(n, 0);
-        dfs(i, adj, t_ans);
-        ans = min(ans, t_ans[i] + 1);
+        dfs(root, adj, t_ans);
+        ans = min(ans, t_ans[root]);
+    } else {
+        ans = 1;
     }
     if (n == 1) ans = 0;
     printf("%lld\n", ans);
