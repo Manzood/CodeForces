@@ -13,31 +13,38 @@ void solve([[maybe_unused]] int test) {
     int n;
     scanf("%lld", &n);
     vector <int> a(n);
+    vector <int> final;
+    bool ans = true;
+    int zc = 0, pc = 0, nc = 0;
     set <int> nums;
-    int nonzeroes = 0;
     for (int i = 0; i < n; i++) {
         scanf("%lld", &a[i]);
-        if (a[i] != 0) nonzeroes++;
+        if (a[i] == 0) {
+            zc++;
+            if (zc < 2) final.push_back(0);
+        } else if (a[i] > 0) {
+            pc++;
+            if (pc > 2) ans = false;
+            final.push_back(a[i]);
+        } else {
+            nc++;
+            if (nc > 2) ans = false;
+            final.push_back(a[i]);
+        }
         nums.insert(a[i]);
     }
-    bool ans = false;
-    if (n == 3) {
-        if (nums.count(a[0] + a[1] + a[2])) {
-            ans = true;
-        }
-    } else {
-        if (nonzeroes <= 1) ans = true;
-        if (nonzeroes == 2) {
-            int sum = 0;
-            for (auto x: nums) {
-                sum += x;
+    if (ans) {
+        int len = final.size();
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
+                if (j == i) continue;
+                for (int k = 0; k < len; k++) {
+                    if (k == i || k == j) continue;
+                    if (!nums.count(final[i] + final[j] + final[k])) {
+                        ans = false;
+                    }
+                }
             }
-            if (sum == 0) {
-                ans = true;
-            }
-        } else if (nonzeroes == 4 && n == 4) {
-            sort (a.begin(), a.end());
-            if (a[0] == -a[3] && a[1] == -a[2]) ans = true;
         }
     }
     ans ? printf("YES\n") : printf("NO\n");
