@@ -9,7 +9,7 @@
 using namespace std;
 #define int long long
 
-void dfs(int node, int parent, int& count, vector<vector<int>>& adj,
+void dfs(int node, int parent, vector<vector<int>>& adj,
          vector<vector<int>>& color, vector<bool>& colored,
          vector<bool>& visited, vector<bool>& visiting) {
     if (visited[node]) return;
@@ -22,25 +22,13 @@ void dfs(int node, int parent, int& count, vector<vector<int>>& adj,
                 color[node].push_back(u);
                 colored[u] = true;
                 colored[node] = true;
-            } else if (!colored[parent]) {
+            } else {
                 color[node].push_back(parent);
                 colored[parent] = true;
                 colored[node] = true;
-            } else {
-                count = parent;
             }
         } else {
-            dfs(u, node, count, adj, color, colored, visited, visiting);
-        }
-    }
-    if (count == node) {
-        for (auto u : adj[node]) {
-            if (visiting[u] && !colored[u]) {
-                color[node].push_back(u);
-                colored[node] = true;
-                colored[u] = true;
-                count = -1;
-            }
+            dfs(u, node, adj, color, colored, visited, visiting);
         }
     }
     visiting[node] = false;
@@ -50,7 +38,7 @@ void solve([[maybe_unused]] int test) {
     int n, m;
     scanf("%lld%lld", &n, &m);
     vector<vector<int>> adj(n);
-    map<vector<int>, int> get_index;
+    map<pair<int, int>, int> get_index;
     vector<vector<int>> color(n);
     vector<bool> colored(n, false);
     for (int i = 0; i < m; i++) {
@@ -65,8 +53,7 @@ void solve([[maybe_unused]] int test) {
     }
     string ans(m, '0');
     vector<bool> visited(n, false), visiting(n, false);
-    int count = -1;
-    dfs(0, -1, count, adj, color, colored, visited, visiting);
+    dfs(0, -1, adj, color, colored, visited, visiting);
     // assert(count == -1);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < (int)color[i].size(); j++) {
