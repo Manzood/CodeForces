@@ -16,6 +16,7 @@ void solve([[maybe_unused]] int test) {
     scanf("%lld%lld%lld", &n, &x, &y);
     string a, b;
     cin >> a >> b;
+    vector<vector<int>> dp(n);
     int cnt = 0;
     for (int i = 0; i < n; i++) {
         cnt += a[i] != b[i];
@@ -24,33 +25,27 @@ void solve([[maybe_unused]] int test) {
         printf("-1\n");
         return;
     }
-    int cur = 0;
-    vector<bool> marked(n, false);
-    int ans = 0;
-    int adj = 0;
-    for (int i = 0; i < n; i++) {
-        if (marked[i]) continue;
-        if (i < n - 1) {
-            if (a[i] != b[i] && a[i + 1] != b[i + 1]) {
-                marked[i] = true;
-                // swap them together
-                adj++;
-                ans += x;
-                marked[i + 1] = true;
-                continue;
+    if (cnt >= 4 || cnt == 0) {
+        printf("%lld\n", cnt / 2 * y);
+    } else if (cnt == 2) {
+        // check adjacency
+        bool adj = false;
+        int prev = -2;
+        for (int i = 0; i < n; i++) {
+            if (a[i] != b[i]) {
+                if (prev == i - 1) {
+                    adj = true;
+                }
+                prev = i;
             }
         }
-        if (a[i] != b[i]) {
-            cur++;
-            if (cur == 2) {
-                // change them together
-                ans += y;
-                cur = 0;
-            }
-        }
+        int ans = 0;
+        if (adj)
+            ans = min(x, 2 * y);
+        else
+            ans = y;
+        printf("%lld\n", ans);
     }
-    ans = min(ans, (adj * 2 * y) + ((cnt - adj) / 2) * y);
-    printf("%lld\n", ans);
 }
 
 int32_t main() {
