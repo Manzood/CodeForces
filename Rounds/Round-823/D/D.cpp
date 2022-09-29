@@ -14,41 +14,29 @@ void solve([[maybe_unused]] int test) {
     scanf("%lld", &n);
     string s, t;
     cin >> s >> t;
-    vector<int> cnt(26, 0);
-    for (auto c : s) {
-        cnt[c - 'a']++;
+    vector<pair<char, char>> a;
+    map<pair<char, char>, int> mp;
+    for (int i = 0; i < n; i++) {
+        a.push_back(make_pair(s[i], t[n - i - 1]));
+        mp[a[i]]++;
+        if (s[i] != t[n - i - 1]) mp[make_pair(t[n - i - 1], s[i])]++;
     }
-    for (auto c : t) {
-        cnt[c - 'a']++;
-    }
-    bool possible = true;
-    for (auto x : cnt) {
-        if (x & 1) possible = false;
-    }
-    for (int i = 0; i < 26; i++) {
-        if (cnt[i] == 2) {
-            // check if they're either in the same string, or not at the same
-            // distance in opposite strings
-            bool same = false;
-            char c = 'a' + (char)i;
-            int cnt1 = 0, cnt2 = 0;
-            for (int j = 0; j < n; j++) {
-                if (s[j] == c) cnt1++;
-                if (t[j] == c) cnt2++;
-            }
-            if (cnt1 == 2 || cnt2 == 2) same = true;
-            if (!same) {
-                for (int j = 0; j < n; j++) {
-                    if (s[j] == c) {
-                        if (t[n - j - 1] == c && (n - j - 1 != j)) {
-                            possible = false;
-                        }
-                    }
-                }
-            }
+    int odd = 0;
+    bool ans = true;
+    bool equal = false;
+    // debug(a);
+    for (auto x : mp) {
+        if (x.second & 1) {
+            odd++;
+            if (x.first.first == x.first.second) equal = true;
         }
     }
-    possible ? printf("YES\n") : printf("NO\n");
+    if (n & 1) {
+        if (odd != 1 || !equal) ans = false;
+    } else {
+        if (odd) ans = false;
+    }
+    ans ? printf("YES\n") : printf("NO\n");
 }
 
 int32_t main() {
