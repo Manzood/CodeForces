@@ -9,35 +9,45 @@
 using namespace std;
 #define int long long
 
-vector<pair<int, int>> midpoints;
-vector<int> path;
-void dfs(int node, vector<vector<int>>& adj) {
-    int cnt = 0;
-    path.push_back(node);
-    for (auto u : adj[node]) {
-        cnt++;
-        dfs(u, adj);
-    }
-    if (cnt == 0) {
-        // leaf found
-        int len = (int)path.size();
-        midpoints.push_back(make_pair(len / 2, path[len / 2]));  // check this
-    }
-    path.pop_back();
-}
-
 void solve([[maybe_unused]] int test) {
     int n, k;
     scanf("%lld%lld", &n, &k);
     vector<vector<int>> adj(n);
-    vector<int> parent(n, -1);
+    vector<int> p(n, -1);
     for (int i = 1; i < n; i++) {
-        int p;
-        scanf("%lld", &p);
-        parent[i] = p - 1;
-        adj[p - 1].push_back(i);
+        int parent;
+        scanf("%lld", &parent);
+        p[i] = parent - 1;
+        adj[parent - 1].push_back(i);
     }
-    priority_queue<pair<int, int>> pq;
+    // dfs isn't even necessary
+    int low = 1;
+    int high = n - 1;
+    while (low < high) {
+        int mid = (low + high) / 2;
+        vector<int> h(n);
+        int moves = 0;
+        // handle case for 1
+        for (int i = n - 1; i >= 1; i--) {
+            if (p[i] != 0 && h[i] == mid - 1) {
+                moves++;
+                h[i] = -1;
+            }
+            h[p[i]] = max(h[p[i]], h[i] + 1);
+        }
+        if (mid == 1) {
+            moves = 0;
+            for (int i = 1; i < n; i++) {
+                if (p[i] != 0) moves++;
+            }
+        }
+        if (moves <= k) {
+            high = mid;
+        } else {
+            low = mid + 1;
+        }
+    }
+    printf("%lld\n", high);
 }
 
 int32_t main() {
