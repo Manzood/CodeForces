@@ -55,4 +55,9 @@ int main([[maybe_unused]] int argc, char* argv[]) {
         printf("%d ", x);
     }
     puts("");
+    printf("%d\n", k);
+    for (auto x : a) {
+        printf("%d ", x);
+    }
+    puts("");
 }

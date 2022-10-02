@@ -9,6 +9,8 @@
 using namespace std;
 #define int long long
 
+// topological sort doesn't work :/
+
 vector<bool> visited;
 vector<int> ans;
 
@@ -95,7 +97,33 @@ void solve([[maybe_unused]] int test) {
         // assert(a[ind - 1] > 0);
     }
     // assert(ind == n);
-    debug(a);
+    vector<int> pos(n + 1, -1);
+    for (int i = 0; i < n; i++) {
+        pos[a[i]] = i;
+    }
+    // debug(a);
+    int prevgt = -1, prevlt = -1;
+    for (int i = 0; i < n; i++) {
+        if (b[i] == 0 || b[i] == n + 1) continue;
+        if (i + 1 > low && b[i] <= low && b[i] > 0 &&
+            (prevgt >= 0 && b[prevgt] != b[i])) {
+            // debug(i);
+            // debug(a);
+            if (pos[i + 1] > 0) swap(a[pos[i + 1] - 1], a[pos[b[i]]]);
+            // debug(a);
+        } else if (i + 1 <= low && b[i] > low && b[i] < n + 1 &&
+                   (prevlt >= 0 && b[prevlt] != b[i])) {
+            // debug(i);
+            // debug(a);
+            if (pos[i + 1] > 0) swap(a[pos[i + 1] - 1], a[pos[b[i]]]);
+            // debug(a);
+        }
+        if (i + 1 > low)
+            prevgt = i;
+        else
+            prevlt = i;
+    }
+    // debug(a);
     printf("%lld\n", low);
     set<int> fin;
     for (auto x : a) {
@@ -104,6 +132,7 @@ void solve([[maybe_unused]] int test) {
         printf("%lld ", x);
         fin.insert(x);
     }
+    printf("\n");
     vector<int> c(n);
     int l1 = n + 1, l2 = 0;
     for (int i = 0; i < n; i++) {
@@ -119,7 +148,6 @@ void solve([[maybe_unused]] int test) {
     for (int i = 0; i < n; i++) {
         assert(c[i] == b[i]);
     }
-    printf("\n");
 }
 
 int32_t main() {
