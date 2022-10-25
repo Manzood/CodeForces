@@ -29,48 +29,25 @@ void solve([[maybe_unused]] int test) {
     vector<int> pref(n, 1);
     for (int i = 0; i < n; i++) {
         if (i > 0) ans[i] = ans[i - 1];
-        ans[i] *= m;
-        ans[i] %= mod;
+        ans[i] = (ans[i] * (m % mod)) % mod;
         pref[i] = ans[i];
     }
     int prod = 1;
     int fin = 0;
-    // find how many numbers upto m have gcd with each index so far > 1
-    // replace prod with product of prime numbers so far
-    // for (int i = 0; i < n; i++) {
-    //     // prod *= (i + 1);
-    //     if (prod <= m) {
-    //         if (prime[i + 1]) {
-    //             prod *= (i + 1);
-    //         }
-    //     }
-    //     if (i > 0) cnt[i] = cnt[i - 1];
-    //     cnt[i] *= (m / prod) % mod;
-    //     cnt[i] %= mod;
-    //     ans[i] -= cnt[i];
-    //     if (ans[i] < 0) ans[i] += mod;
-    //     fin += ans[i];
-    //     fin %= mod;
-    // }
-    for (int i = 0; i < n; i++) {
-        // prod *= (i + 1);
+    cnt[0] = m % mod;
+    for (int i = 1; i < n; i++) {
         if (prod <= m) {
             if (prime[i + 1]) {
                 prod *= (i + 1);
             }
         }
-        // if (i > 0) cnt[i] = cnt[i - 1];
-        cnt[i] = m / prod;
-        // cnt[i] %= mod;
-        // if (i > 0) ans[i] = ans[i - 1];
-        if (i > 0) ans[i] = (pref[i - 1] * ((m - cnt[i]) % mod)) % mod;
-        // if (ans[i] < 0) ans[i] += mod;
-        ans[i] %= mod;
-        fin += ans[i];
-        fin %= mod;
+        cnt[i] = (cnt[i - 1] * ((m / prod) % mod)) % mod;
     }
-    debug(ans);
-    debug(cnt);
+    for (int i = 0; i < n; i++) {
+        int val = ans[i] - cnt[i];
+        if (val < 0) val += mod;
+        fin = (fin + val) % mod;
+    }
     printf("%lld\n", fin);
 }
 
