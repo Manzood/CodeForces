@@ -21,7 +21,7 @@ void solve([[maybe_unused]] int test) {
         }
     }
     vector<vector<bool>> dp(n + 1, vector<bool>(MX_N, false));
-    vector<vector<int>> prev(n + 2, vector<int>(MX_N, -1));
+    vector<vector<int>> prev(n + 1, vector<int>(MX_N, -1));
     dp[0][0] = true;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -38,10 +38,13 @@ void solve([[maybe_unused]] int test) {
     for (int i = 1; i < MX_N; i++) {
         if (dp[n][i] == true) {
             ans = true;
-            int ptr = prev[n + 1][i];
+            int ptr = prev[n][i];
             soln.push_back(ptr);
-            for (int j = n; j > 1; j--) {
-                ptr = prev[j][a[j + 1][ptr] ^ ptr];
+            debug(ptr);
+            for (int j = n - 1; j > 0; j--) {
+                debug(a[j][ptr] ^ ptr);
+                ptr = prev[j][a[j][ptr] ^ ptr];
+                debug(ptr);
                 soln.push_back(ptr);
             }
             break;

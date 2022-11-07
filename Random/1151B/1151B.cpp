@@ -7,56 +7,59 @@
 #endif
 
 using namespace std;
-#define int long long
-
-const int MX_N = 20;
+// #define int long long
 
 void solve([[maybe_unused]] int test) {
     int n, m;
-    scanf("%lld%lld", &n, &m);
+    scanf("%d%d", &n, &m);
     vector<vector<int>> a(n, vector<int>(m));
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
-            scanf("%lld", &a[i][j]);
+            scanf("%d", &a[i][j]);
         }
     }
-    vector<vector<bool>> dp(n + 1, vector<bool>(MX_N, false));
-    vector<vector<int>> prev(n + 1, vector<int>(MX_N, -1));
-    dp[0][0] = true;
+    vector<bool> dp(1024, false);
+    vector<vector<int>> choice(n + 1, vector<int>(1024, -1));
+    dp[0] = true;
     for (int i = 0; i < n; i++) {
+        vector<bool> new_dp(1024, false);
         for (int j = 0; j < m; j++) {
-            for (int k = 0; k < MX_N; k++) {
-                if (dp[i][k]) {
-                    dp[i + 1][k ^ a[i][j]] = true;
-                    prev[i + 1][k ^ a[i][j]] = j;
+            for (int k = 0; k < 1024; k++) {
+                if (dp[k] == true) {
+                    new_dp[a[i][j] ^ k] = true;
+                    choice[i + 1][a[i][j] ^ k] = j;
                 }
+                // new_dp[a[i][j] ^ k] = new_dp[a[i][j] ^ k] | dp[k];
             }
         }
+        dp = new_dp;
     }
     bool ans = false;
-    vector<int> soln;
-    for (int i = 1; i < MX_N; i++) {
-        if (dp[n][i] == true) {
+    int latest = 0;
+    for (int i = 1; i < 1024; i++) {
+        if (dp[i]) {
             ans = true;
-            int ptr = prev[n][i];
-            soln.push_back(ptr);
-            debug(ptr);
-            for (int j = n - 1; j > 0; j--) {
-                debug(a[j][ptr] ^ ptr);
-                ptr = prev[j][a[j][ptr] ^ ptr];
-                debug(ptr);
-                soln.push_back(ptr);
-            }
-            break;
+            latest = i;
         }
     }
-    ans ? printf("TAK\n") : printf("NIE\n");
     if (ans) {
-        reverse(soln.begin(), soln.end());
-        for (int i = 0; i < n; i++) {
-            printf("%lld ", soln[i] + 1);
+        vector<int> fin;
+        printf("TAK\n");
+        int i = n;
+        while (i > 0) {
+            int j = choice[i][latest];
+            latest = latest ^ a[i - 1][j];
+            i--;
+            // printf("%d ", j + 1);
+            fin.push_back(j + 1);
+        }
+        reverse(fin.begin(), fin.end());
+        for (auto x : fin) {
+            printf("%d ", x);
         }
         printf("\n");
+    } else {
+        printf("NIE\n");
     }
 }
 
