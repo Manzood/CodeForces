@@ -12,22 +12,19 @@ using namespace std;
 void solve([[maybe_unused]] int test) {
     int n, k;
     scanf("%lld%lld", &n, &k);
-    vector<int> dp(n + 1, 0);
-    dp[0] = 1;
-    debug(dp);
-    for (int j = k; j <= n; j++) {
-        vector<int> copy = dp;
-        dp[0] = 0;
-        for (int i = j; i <= n; i += j) {
-            dp[i] += dp[i - j];
-            dp[i] += copy[i - j];
+    vector<int> ans(n + 1, 0);
+    int sqrt = 1;
+    while (sqrt * sqrt <= n) sqrt++;
+    for (int i = k; i * i <= n; i++) {
+        for (int mult = 1; i * mult <= n; mult++) {
+            ans[i * mult]++;
+            if (mult > sqrt) ans[i * mult]++;
         }
-        dp[0] = 1;
-        debug(dp);
     }
     for (int i = 1; i <= n; i++) {
-        printf("%lld ", dp[i]);
+        printf("%lld ", ans[i]);
     }
+    printf("\n");
 }
 
 int32_t main() {
