@@ -57,13 +57,11 @@ void get_divisors(vector<int>& divisors) {
     }
 }
 
-// returns the number of integers coprime to n until m using PIE
-// time complexity: O((2 ** (k) * k) where k -> number of prime factors of n)
-int64_t coprime(int64_t n, int64_t m) {
-    vector<int> prime_factors;
-    int tmp = n;
+vector<int64_t> get_prime_factors(int64_t n) {
+    vector<int64_t> prime_factors;
+    int64_t tmp = n;
     while (tmp % 2 == 0) {
-        if (!(int)prime_factors.size()) prime_factors.push_back(2);
+        if (!(int64_t)prime_factors.size()) prime_factors.push_back(2);
         tmp /= 2;
     }
     for (int j = 3; j * j <= tmp; j += 2) {
@@ -74,13 +72,20 @@ int64_t coprime(int64_t n, int64_t m) {
         }
     }
     if (tmp > 1) prime_factors.push_back(tmp);
+    return prime_factors;
+}
+
+// returns the number of integers coprime to n until m using PIE
+// time complexity: O((2 ** (k) * k) where k -> number of prime factors of n)
+int64_t coprime(int64_t n, int64_t m) {
+    vector<int64_t> prime_factors = get_prime_factors(n);
     // using PIE
     int len = (int)prime_factors.size();
     int64_t num = (1LL << len);
     int64_t common = 0;
     for (int j = 1; j < num; j++) {
         int cnt = __builtin_popcountll(j);
-        tmp = cnt & 1 ? 1 : -1;
+        int tmp = cnt & 1 ? 1 : -1;
         int prod = 1;
         for (int k = 0; k < (int)prime_factors.size(); k++) {
             if ((1LL << k) & j) {
