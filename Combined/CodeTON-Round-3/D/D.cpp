@@ -11,6 +11,89 @@ using namespace std;
 
 constexpr int mod = 998244353;
 
+namespace number_theory {
+
+vector<int> primes_list;
+vector<bool> is_prime;
+
+const int N = (int)1e6 + 5;
+
+void sieve(int n) {
+    is_prime.resize(n + 1);
+    is_prime.assign(n + 1, true);
+    primes_list.clear();
+    is_prime[0] = false;
+    is_prime[1] = false;
+    for (int i = 2; i <= n; i++) {
+        if (!is_prime[i]) continue;
+        for (int j = i * i; j <= n; j += i) {
+            is_prime[j] = false;
+        }
+        primes_list.push_back(i);
+    }
+}
+
+// gets the number of prime factors of each element in the vector
+void count_prime_factors(vector<int>& prime_factors) {
+    int n = (int)prime_factors.size();
+    prime_factors.assign(n, 0);
+    for (int i = 2; i <= n; i++) {
+        if (prime_factors[i] == 0) {
+            for (int j = i; j <= n; j += i) {
+                prime_factors[j]++;
+            }
+        }
+    }
+}
+
+// gets the number of divisors for each element upto n
+void get_divisors(vector<int>& divisors) {
+    int n = (int)divisors.size();
+    divisors.assign(n, 0);
+    for (int i = 1; i <= n; i++) {
+        for (int j = i; j <= n; j += i) {
+            divisors[j]++;
+        }
+    }
+}
+
+// returns the number of integers coprime to n until m using PIE
+// time complexity: O((2 ** (k) * k) where k -> number of prime factors of n)
+int64_t coprime(int64_t n, int64_t m) {
+    vector<int> prime_factors;
+    int tmp = n;
+    while (tmp % 2 == 0) {
+        if (!(int)prime_factors.size()) prime_factors.push_back(2);
+        tmp /= 2;
+    }
+    for (int j = 3; j * j <= tmp; j += 2) {
+        while (tmp % j == 0) {
+            if (!(int)prime_factors.size() || prime_factors.back() != j)
+                prime_factors.push_back(j);
+            tmp /= j;
+        }
+    }
+    if (tmp > 1) prime_factors.push_back(tmp);
+    // using PIE
+    int len = (int)prime_factors.size();
+    int64_t num = (1LL << len);
+    int64_t common = 0;
+    for (int j = 1; j < num; j++) {
+        int cnt = __builtin_popcountll(j);
+        tmp = cnt & 1 ? 1 : -1;
+        int prod = 1;
+        for (int k = 0; k < (int)prime_factors.size(); k++) {
+            if ((1LL << k) & j) {
+                prod *= prime_factors[k];
+            }
+        }
+        common += (m / prod) * tmp;
+        common %= mod;
+    }
+    return m - common;
+}
+}  // namespace number_theory
+
 void solve([[maybe_unused]] int test) {
     int n, m;
     scanf("%lld%lld", &n, &m);
@@ -29,34 +112,10 @@ void solve([[maybe_unused]] int test) {
             ans *= (m / a[i]) % mod;
             ans %= mod;
         } else {
-            // phi(a[i - 1] / a[i])
             int x = a[i - 1] / a[i];
-            int res = x;
-            for (int p = 2; p * p <= x; p++) {
-                if (x % p == 0) {
-                    while (x % p == 0) x /= p;
-                    res -= res / p;
-                }
-            }
-            if (x > 1) res -= res / (a[i - 1] / a[i]);
-            // if (a[i - 1] / a[i] == 1 && a[i] != 1) res = 0;
-            // calculated totient function
-            if (test == 4) debug(i, res);
-            int cnt = (res * (m / a[i - 1])) % mod;
-            // repeat for remainder
-            int rem = m % a[i - 1];
-            x = a[i - 1] / a[i];
-            res = rem / a[i];
-            for (int p = 2; p * p <= x; p++) {
-                if (x % p == 0) {
-                    while (x % p == 0) x /= p;
-                    res -= (res / p);
-                }
-            }
-            if (x > 1) res -= res / (a[i - 1] / a[i]);
-            if (rem == 1 && a[i] != 1) res = 0;
-            cnt += res;
-            ans *= (cnt % mod);
+            int fin = number_theory::coprime(x, m / a[i]);
+            fin %= mod;
+            ans *= fin;
             ans %= mod;
         }
     }
