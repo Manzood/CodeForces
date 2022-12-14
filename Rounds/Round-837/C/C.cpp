@@ -11,25 +11,46 @@ using namespace std;
 
 constexpr int mod = (int)1e9 + 7;
 
+vector<int> primes_list;
+
+void sieve(int n) {
+    vector<bool> is_prime;
+    is_prime.assign(n + 1, true);
+    primes_list.clear();
+    is_prime[0] = false;
+    is_prime[1] = false;
+    for (int i = 2; i <= n; i++) {
+        if (!is_prime[i]) continue;
+        for (int j = i * i; j <= n; j += i) {
+            is_prime[j] = false;
+        }
+        primes_list.push_back(i);
+    }
+}
+
 void solve([[maybe_unused]] int test) {
     int n;
     scanf("%lld", &n);
     vector<int> a(n);
-    int prod = 1;
-    bool ans = false;
-    int x = 0;
-    int cnt = 0;
     for (int i = 0; i < n; i++) {
         scanf("%lld", &a[i]);
-        int v = (cnt * (mod % a[i])) % a[i];
-        int val =
-            (((((v + x) % a[i]) * (mod % a[i])) % a[i]) + (prod % a[i])) % a[i];
-        if (__gcd(val, a[i]) > 1) ans = true;
-        prod *= a[i];
-        x += prod / mod;
-        cnt += x / mod;
-        x %= mod;
-        prod %= mod;
+    }
+    // get prime_factors
+    map<int, int> p;
+    bool ans = false;
+    for (int i = 0; i < n && !ans; i++) {
+        for (auto x : primes_list) {
+            if (x * x > a[i]) break;
+            if (a[i] % x == 0) {
+                if (p.count(x)) ans = true;
+                p[x]++;
+                while (a[i] % x == 0) a[i] /= x;
+            }
+        }
+        if (a[i] > 1) {
+            if (p.count(a[i])) ans = true;
+            p[a[i]]++;
+        }
     }
     ans ? printf("YES\n") : printf("NO\n");
 }
@@ -37,6 +58,7 @@ void solve([[maybe_unused]] int test) {
 int32_t main() {
     int t = 1;
     cin >> t;
+    sieve(31623);
     for (int tt = 1; tt <= t; tt++) {
         solve(tt);
     }
