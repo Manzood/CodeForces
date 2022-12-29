@@ -1,0 +1,43 @@
+#include "bits/stdc++.h"
+
+#ifdef local
+#include "custom/debugger.h"
+#else
+#define debug(...) 42;
+#endif
+
+using namespace std;
+#define int long long
+
+void solve([[maybe_unused]] int test) {
+    int n;
+    scanf("%lld", &n);
+    vector<int> a(n);
+    int tot = 0;
+    int leftmost = 0;
+    while ((1LL << leftmost) <= n) leftmost++;
+    if ((1LL << leftmost) & n) leftmost++;
+    for (int i = 0; i < n; i++) {
+        scanf("%lld", &a[i]);
+        tot ^= a[i];
+    }
+    vector<int> squares;
+    squares.push_back(0);
+    for (int i = 1; i * i <= (1LL << leftmost); i++) {
+        squares.push_back(i * i)
+    }
+    // right to left
+    set<int> left;
+    int cur = tot;
+    left.insert(0);
+    for (int i = 0; i < n; i++) {
+    }
+}
+
+int32_t main() {
+    int t = 1;
+    cin >> t;
+    for (int tt = 1; tt <= t; tt++) {
+        solve(tt);
+    }
+}
