@@ -9,25 +9,26 @@
 using namespace std;
 #define int long long
 
+constexpr int MOD = 998244353;
+
 void solve([[maybe_unused]] int test) {
     int n, k;
     scanf("%lld%lld", &n, &k);
-    vector<int> dp(n + 1, 0);
+    vector<int> dp(n + 1), ans(n + 1);
     dp[0] = 1;
-    debug(dp);
-    for (int j = k; j <= n; j++) {
-        vector<int> copy = dp;
-        dp[0] = 0;
-        for (int i = j; i <= n; i += j) {
-            dp[i] += dp[i - j];
-            dp[i] += copy[i - j];
+    for (int s = 0; s + k <= n; s += k++) {
+        vector<int> sum(k);
+        for (int i = 0; i <= n; i++) {
+            int tmp = sum[i % k];
+            (sum[i % k] += dp[i]) %= MOD;
+            (dp[i] = tmp) %= MOD;
+            (ans[i] += dp[i]) %= MOD;
         }
-        dp[0] = 1;
-        debug(dp);
     }
     for (int i = 1; i <= n; i++) {
-        printf("%lld ", dp[i]);
+        printf("%lld ", ans[i]);
     }
+    printf("\n");
 }
 
 int32_t main() {
