@@ -1,0 +1,39 @@
+#include "bits/stdc++.h"
+
+#ifdef local
+#include "custom/debugger.h"
+#else
+#define debug(...) 42;
+#endif
+
+using namespace std;
+#define int long long
+
+void solve([[maybe_unused]] int test) {
+    int l, r;
+    scanf("%lld%lld", &l, &r);
+    int cnt = 0;
+    int val;
+    for (int i = l; i <= r; i *= 2) {
+        val = i;
+        cnt++;
+    }
+    int ans = 1;
+    if (val / 2 * 3 <= r) {
+        ans += cnt - 1;
+    }
+    for (int cur = l + 1; cur <= r; cur++) {
+        for (int i = l; i <= r; i *= 2) {
+            val = i;
+            cnt++;
+        }
+    }
+}
+
+int32_t main() {
+    int t = 1;
+    cin >> t;
+    for (int tt = 1; tt <= t; tt++) {
+        solve(tt);
+    }
+}
