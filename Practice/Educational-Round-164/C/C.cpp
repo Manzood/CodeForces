@@ -1,0 +1,38 @@
+#include "bits/stdc++.h"
+
+#ifdef local
+#include "custom/debugger.h"
+#else
+#define debug(...) 42;
+#endif
+
+using namespace std;
+#define int long long
+
+void solve([[maybe_unused]] int test) {
+    string x, y;
+    cin >> x >> y;
+    int n = (int)x.size();
+    bool first = true;
+    for (int i = 0; i < n; i++) {
+        if (x[i] < y[i]) {
+            if (first) {
+                swap(x[i], y[i]);
+            }
+        } else {
+            if (!first) {
+                swap(x[i], y[i]);
+            }
+        }
+        if (x[i] != y[i]) first = false;
+    }
+    cout << x << "\n" << y << "\n";
+}
+
+int32_t main() {
+    int t = 1;
+    cin >> t;
+    for (int tt = 1; tt <= t; tt++) {
+        solve(tt);
+    }
+}

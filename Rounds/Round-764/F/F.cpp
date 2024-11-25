@@ -1,45 +1,45 @@
 #include "bits/stdc++.h"
+
 #ifdef local
 #include "custom/debugger.h"
 #else
 #define debug(x) 42;
 #endif
+
 using namespace std;
 #define int long long
 
 int query(int val) {
     cout << "+ " << val << endl;
-    int answer; cin >> answer;
-    return answer;
+    int response;
+    cin >> response;
+    return response;
 }
 
 int32_t main() {
     int n;
     cin >> n;
-    int low = 1;
-    int high = n - 1;
-    int ans = n;
-    int cnt = 0;
-    int balance = 0;
-    int sum = 0;
+    int low = 1, high = n - 1, dist = 0, exp = 1, x = 1, add = 0, cur = 0;
     while (low <= high) {
-        int mid = low + (high - low) / 2;
-        debug (mid, low, high, cnt);
-        int q = n - mid + balance;
-        int response = query (q);
-        sum += q;
-        if (response > cnt) {
-            cnt = response;
-            ans = mid;
+        int mid = (low + high) / 2;
+        // debug(low, high, mid, dist, cur);
+        int guess = n - mid - dist;
+        int response = query(guess);
+        add += guess;
+        if (cur > 0)
+            cur += guess;
+        else
+            cur = guess + dist;
+        if (response == exp) {
+            x = mid;
             low = mid + 1;
-            balance = n - q;
+            dist = cur - n;
+            cur = 0;
+            exp++;
         } else {
-            balance = -(n - q);
             high = mid - 1;
-            // cnt++;
+            dist += guess;
         }
-        debug (ans, low, high);
     }
-    debug(ans, sum);
-    cout << "! " << ans + sum << endl;
+    cout << "! " << x + add << endl;
 }
