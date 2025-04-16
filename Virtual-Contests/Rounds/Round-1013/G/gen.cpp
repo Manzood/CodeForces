@@ -2,6 +2,7 @@
 #include "bits/stdc++.h"
 using namespace std;
 
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int rand(int a, int b) { return a + rand() % (b - a + 1); }
 
 // generate vector of a particular size with values between start and end,
@@ -19,7 +20,7 @@ vector<int> generate_vector(int start, int end, int size) {
 vector<int> generate_permutation(int size) {
     vector<int> temp(size);
     for (int i = 0; i < size; i++) temp[i] = i + 1;
-    random_shuffle(temp.begin(), temp.end());
+    shuffle(temp.begin(), temp.end(), rng);
     return temp;
 }
 
