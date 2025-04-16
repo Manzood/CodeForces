@@ -9,39 +9,74 @@
 using namespace std;
 #define int long long
 
+int ans = 1;
+
+void get(int n, int k, [[maybe_unused]] int test) {
+    set<pair<int, int>> found;
+    queue<pair<int, int>> q;
+    for (int i = 0; i <= n; i += k) {
+        q.push({i, k});
+    }
+    while (!q.empty()) {
+        queue<pair<int, int>> prev = q;
+        q = queue<pair<int, int>>();
+        while (!prev.empty()) {
+            pair<int, int> val = prev.front();
+            prev.pop();
+            if (val.first < 0 || val.first > n) continue;
+            if (val.second == 1 || val.second < ans) return;
+            if ((k - val.second) & 1) {
+                if (val.first > val.second * val.second) {
+                    ans = val.second - 1;
+                    return;
+                }
+                for (int i = val.first + val.second - 1; i <= n;
+                     i += val.second - 1) {
+                    if (found.count({i, val.second - 1})) break;
+                    q.push({i, val.second - 1});
+                    found.insert({i, val.second - 1});
+                }
+            } else {
+                if ((n - val.first) % val.second == 0) {
+                    ans = val.second;
+                    return;
+                }
+                if ((n - val.first) > val.second * val.second) {
+                    ans = val.second - 2;
+                }
+                for (int i = val.first - val.second + 1; i >= 0;
+                     i -= val.second - 1) {
+                    if (found.count({i, val.second - 1})) break;
+                    q.push({i, val.second - 1});
+                    found.insert({i, val.second - 1});
+                }
+            }
+        }
+    }
+}
+
 void solve([[maybe_unused]] int test) {
     int n, k;
+    ans = 1;
     scanf("%lld%lld", &n, &k);
-    // go upto 2 * k
-    int ans = 1;
-    if (n % k == 0) ans = k;
-    int jump = k;
-    set<int> start = {0};
-    while (jump > 1 && ans == 1) {
-        set<int> other;
-        for (auto cur : start) {
-            if ((n - cur) % jump == 0) {
-                ans = max(ans, jump);
-            }
-            int val = (n - cur) / jump;
-            for (int i = 1; i <= val && i <= k; i++) {
-                other.insert((cur + i) % k);
-            }
-            if (jump == 5) debug(other);
-        }
-        for (auto cur : other) {
-            if (cur - jump + 1 >= 0) other.insert(cur - jump + 1);
-        }
-        if (jump == 5) debug(other);
-        start = other;
-        jump -= 2;
+
+    if (n % k == 0) {
+        printf("%lld\n", k);
+        return;
     }
+    if (n > k * k) {
+        printf("%lld\n", max(k - 2, 1LL));
+        return;
+    }
+
+    get(n, k, test);
     printf("%lld\n", ans);
 }
 
 int32_t main() {
     int t = 1;
     cin >> t;
+
     for (int tt = 1; tt <= t; tt++) {
         solve(tt);
     }
