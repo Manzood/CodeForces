@@ -13,11 +13,11 @@ void solve([[maybe_unused]] int test) {
     int n;
     scanf("%lld", &n);
     vector<pair<int, int>> a(n);
-    map<int, int> x, y;
+    map<int, int> x, diag;
     for (int i = 0; i < n; i++) {
         scanf("%lld%lld", &a[i].first, &a[i].second);
         x[a[i].first]++;
-        y[a[i].second]++;
+        diag[a[i].first + a[i].second]++;
     }
     int ansX = -1, ansY = -1;
     for (auto cur : x) {
@@ -25,20 +25,11 @@ void solve([[maybe_unused]] int test) {
             ansX = cur.first;
         }
     }
-    int cnt1 = 0, cnt2 = 0;
-    for (auto cur : y) {
+    for (auto cur : diag) {
         if (cur.second & 1) {
-            if (cur.first & 1) {
-                cnt1++;
-            } else {
-                cnt2++;
-            }
+            ansY = cur.first - ansX;
         }
     }
-    if (cnt1 & 1)
-        ansY = 0;
-    else
-        ansY = 1;
     printf("%lld %lld\n", ansX, ansY);
 }
 
