@@ -1,48 +1,43 @@
 #include <stdio.h>
 
-int main()
-{
-	int t;
-	scanf ("%d", &t);
+int main() {
+    int t;
+    scanf("%d", &t);
 
-	int b, count, test, rem;
-	int n, num;
+    int b, count, test, rem;
+    int n, num;
 
-	while (t--)
-	{
-		count = 0;
-		scanf ("%d", &n);
+    while (t--) {
+        count = 0;
+        scanf("%d", &n);
 
-		test = 1;
+        test = 1;
 
-		num = n;
-		b = 0;
+        num = n;
+        b = 0;
 
-		while (num > 10)
-		{
-			num = num/10;
-			b++;
-		}
+        while (num > 10) {
+            num = num / 10;
+            b++;
+        }
 
-		while (n>num)
-		{
-			rem = n%10;
+        while (n > num) {
+            rem = n % 10;
 
-			if (rem<num)
-			{
-				test = 0;
-			}
+            if (rem < num) {
+                test = 0;
+            }
 
-			n=n/10;
-		}
+            n = n / 10;
+        }
 
-		if (test==1)
-			count+=num;
-		else
-			count += num-1;
+        if (test == 1)
+            count += num;
+        else
+            count += num - 1;
 
-		count += (b*9);
-	
-		printf ("%d\n", count);
-	}
+        count += (b * 9);
+
+        printf("%d\n", count);
+    }
 }

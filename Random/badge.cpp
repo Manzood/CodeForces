@@ -1,38 +1,39 @@
 #include "bits/stdc++.h"
-
-// #include "custom/debugger.h"
+#ifdef local
+#include "custom/debugger.h"
+#endif
 
 using namespace std;
 
 class A {
-public:
-  int b;
+   public:
+    int b;
 
-  int getB() { return b; }
+    int getB() { return b; }
 };
 
 int loop(vector<int> point, int start) {
-  set<int> visited;
-  int current = start;
-  while (visited.count(current) == 0) {
-    visited.insert(current);
-    current = point[current];
-  }
-  return current;
+    set<int> visited;
+    int current = start;
+    while (visited.count(current) == 0) {
+        visited.insert(current);
+        current = point[current];
+    }
+    return current;
 }
 
 int main() {
-  int n;
-  cin >> n;
-  vector<int> point(n);
-  for (int i = 0; i < n; i++) {
-    scanf("%d", &point[i]);
-    point[i]--;
-  }
-  int ans;
-  for (int i = 0; i < n; i++) {
-    ans = loop(point, i);
-    printf("%d ", ans + 1);
-  }
-  printf("\n");
+    int n;
+    cin >> n;
+    vector<int> point(n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &point[i]);
+        point[i]--;
+    }
+    int ans;
+    for (int i = 0; i < n; i++) {
+        ans = loop(point, i);
+        printf("%d ", ans + 1);
+    }
+    printf("\n");
 }
