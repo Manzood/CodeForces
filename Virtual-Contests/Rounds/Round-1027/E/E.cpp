@@ -14,7 +14,7 @@ void solve([[maybe_unused]] int test) {
     scanf("%lld", &n);
     vector<int> a(n);
     for (int i = 0; i < n; i++) {
-        scanf("%lld", &n);
+        scanf("%lld", &a[i]);
     }
     vector<vector<int>> adj(n);
     for (int i = 0; i < n - 1; i++) {
@@ -23,7 +23,24 @@ void solve([[maybe_unused]] int test) {
         u--, v--;
         adj[u].push_back(v), adj[v].push_back(u);
     }
-    // write the dfs
+
+    vector<int> mx(n, 0), mi(n, 0);
+    mx[0] = a[0];
+
+    function<void(int, int)> dfs = [&](int node, int par) {
+        mx[node] = a[node] - min(mi[par], 0LL);
+        mi[node] = a[node] - max(mx[par], 0LL);
+        for (auto u : adj[node])
+            if (u != par) dfs(u, node);
+    };
+
+    for (auto u : adj[0]) {
+        dfs(u, 0);
+    }
+
+    for (int i = 0; i < n; i++) {
+        printf("%lld%c", mx[i], " \n"[i == n - 1]);
+    }
 }
 
 int32_t main() {
