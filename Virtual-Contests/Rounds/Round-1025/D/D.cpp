@@ -9,90 +9,126 @@
 using namespace std;
 #define int long long
 
-const int INF = 1000000000;
-vector<vector<pair<int, int>>> adj;
-
-void dijkstra(int s, vector<int>& d, vector<int>& p) {
-    int n = adj.size();
-    d.assign(n, INF);
-    p.assign(n, -1);
-    vector<bool> u(n, false);
-
-    d[s] = 0;
-    for (int i = 0; i < n; i++) {
-        int v = -1;
-        for (int j = 0; j < n; j++) {
-            if (!u[j] && (v == -1 || d[j] < d[v])) v = j;
-        }
-
-        if (d[v] == INF) break;
-
-        u[v] = true;
-        for (auto edge : adj[v]) {
-            int to = edge.first;
-            int len = edge.second;
-
-            if (d[v] + len < d[to]) {
-                d[to] = d[v] + len;
-                p[to] = v;
-            }
-        }
-    }
-}
+const int INF = (int)1e9 + 7;
 
 void solve([[maybe_unused]] int test) {
-    adj.clear();
     int n, m, l;
     scanf("%lld%lld%lld", &n, &m, &l);
     vector<int> a(l);
+    bool hasOdd = false;
     for (int i = 0; i < l; i++) {
         scanf("%lld", &a[i]);
+        if (a[i] & 1) hasOdd = true;
     }
-    adj.resize(n);
+    vector<vector<int>> adj(n);
     for (int i = 0; i < m; i++) {
         int u, v;
         scanf("%lld%lld", &u, &v);
         u--, v--;
-        adj[u].push_back({v, 1});
-        adj[v].push_back({u, 1});
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
-
-    vector<int> d, p;
-    dijkstra(0, d, p);
 
     sort(a.begin(), a.end());
-    vector<int> s = a;
-    for (int i = 1; i < l; i++) s[i] = a[i] + s[i - 1];
-    vector<bool> hasOdd(n, false);
-    for (int i = l - 1; i >= 0; i--) {
-        if (a[i] & 1) hasOdd[i] = true;
-        if (i < l - 1) {
-            if (hasOdd[i + 1]) hasOdd[i] = true;
+    reverse(a.begin(), a.end());
+
+    bool same = true;
+    vector<int> pref(l, 0);
+    for (int i = 0; i < l; i++) {
+        if (i == 0) {
+            pref[i] = a[i];
+        } else {
+            if ((a[i] & 1) != (a[i - 1] & 1)) same = false;
+            pref[i] = a[i] + pref[i - 1];
         }
     }
 
-    vector<bool> ans(n, false);
-    ans[0] = true;
-    for (int i = 1; i < n; i++) {
-        int val = d[i];
-        int ind = lower_bound(s.begin(), s.end(), val) - s.begin();
-        if (ind < l) {
-            int tot = s[ind];
-            if ((tot - val) % 2 == 0) {
-                ans[i] = true;
+    vector<int> edist(n, INF), odist(n, INF);
+    auto dijkstra = [&]() {
+        set<pair<int, int>> even, odd;
+        edist[0] = 0;
+        for (int i = 1; i < n; i++) {
+            even.insert({INF, i});
+            odd.insert({INF, i});
+        }
+        even.insert({0, 0});
+        odd.insert({INF, 0});
+
+        while (!even.empty() || !odd.empty()) {
+            pair<int, int> chosen;
+            if (even.empty()) {
+                chosen = *odd.begin();
+                odd.erase(odd.begin());
+            } else if (odd.empty()) {
+                chosen = *even.begin();
+                even.erase(even.begin());
             } else {
-                if (ind < l - 1 && hasOdd[ind + 1]) ans[i] = true;
+                pair<int, int> etop = *even.begin();
+                pair<int, int> otop = *odd.begin();
+                if (etop.first < otop.first) {
+                    chosen = etop;
+                    even.erase(even.begin());
+                } else {
+                    chosen = otop;
+                    odd.erase(odd.begin());
+                }
+            }
+
+            for (auto u : adj[chosen.second]) {
+                int val = chosen.first + 1;
+                if (val & 1) {
+                    if (odist[u] > val) {
+                        odd.erase({odist[u], u});
+                        odist[u] = min(odist[u], val);
+                        odd.insert({odist[u], u});
+                    }
+                } else {
+                    if (edist[u] > val) {
+                        even.erase({edist[u], u});
+                        edist[u] = min(edist[u], val);
+                        even.insert({edist[u], u});
+                    }
+                }
             }
         }
+    };
+
+    dijkstra();
+
+    string ans = "1";
+    for (int i = 1; i < n; i++) {
+        bool found = false;
+
+        int dist = edist[i];
+        int ind = lower_bound(pref.begin(), pref.end(), dist) - pref.begin();
+        if (ind < l) {
+            int val = pref[ind];
+            if ((val - dist) % 2 == 0) {
+                found = true;
+            } else {
+                if (ind < l - 1 && (!same || hasOdd)) found = true;
+            }
+        }
+
+        dist = odist[i];
+        ind = lower_bound(pref.begin(), pref.end(), dist) - pref.begin();
+        if (ind < l) {
+            int val = pref[ind];
+            if ((val - dist) % 2 == 0) {
+                found = true;
+            } else {
+                if (ind < l - 1 && (!same || hasOdd)) found = true;
+            }
+        }
+
+        if (found) {
+            ans += '1';
+        } else {
+            ans += '0';
+        }
     }
 
-    for (int i = 0; i < n; i++) {
-        if (ans[i])
-            printf("1");
-        else
-            printf("0");
-    }
-    printf("\n");
+    cout << ans << "\n";
 }
 
 int32_t main() {

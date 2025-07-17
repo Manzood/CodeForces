@@ -13,15 +13,21 @@ void solve([[maybe_unused]] int test) {
     int a, b, x, y;
     scanf("%lld%lld%lld%lld", &a, &b, &x, &y);
     int ans = (b - a) * x;
-    int tot = 0;
-    for (int i = a; i < b; i++) {
-        if (i & 1) {
-            tot += x;
+    int val = 0;
+    if (a & 1) {
+        if ((b - a) % 2 == 0) {
+            val = (b - a) / 2 * (x + y);
         } else {
-            tot += y;
+            val = (b - a) / 2 * (x + y) + x;
+        }
+    } else {
+        if ((b - a) % 2 == 0) {
+            val = (b - a) / 2 * (x + y);
+        } else {
+            val = (b - a) / 2 * (x + y) + y;
         }
     }
-    ans = min(ans, tot);
+    ans = min(ans, val);
     if (b == a - 1 && (a & 1)) ans = y;
     printf("%lld\n", max(ans, -1LL));
 }
