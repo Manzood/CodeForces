@@ -38,15 +38,23 @@ void solve([[maybe_unused]] int test) {
     sort(upgrades.begin(), upgrades.end());
     sort(others.begin(), others.end());
 
-    set<int> available;
+    multiset<int> available;
+    // debug(others);
     int ptr = 0;
     for (int x = 0; x < n; x++) {
         if (cnt >= (int)others.size()) break;
         if (a[x] >= others[cnt]) {
             cnt++;
         } else {
-            while (ptr < (int)upgrades.size() && upgrades[ptr].first <= a[x]) {
+            int best = a[x];
+            if (!available.empty()) best = max(best, *available.rbegin());
+            while (ptr < (int)upgrades.size() && upgrades[ptr].first <= best) {
                 available.insert(upgrades[ptr++].second);
+                best = max(best, *available.rbegin());
+            }
+            debug(x);
+            for (auto tmp : available) {
+                debug(tmp);
             }
             while (!available.empty() && *available.begin() < others[cnt]) {
                 available.erase(available.begin());
